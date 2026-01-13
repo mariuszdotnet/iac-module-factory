@@ -126,7 +126,7 @@ jobs:
           echo "🎉 All modules validated successfully!"
 
       - name: Comment on PR (on failure)
-        if: failure()
+        if: failure() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
