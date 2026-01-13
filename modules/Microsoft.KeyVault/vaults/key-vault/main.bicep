@@ -150,7 +150,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
     // Protection & Security
     enableSoftDelete: enableSoftDelete
     softDeleteRetentionInDays: softDeleteRetentionInDays
-    enablePurgeProtection: enablePurgeProtection ? enablePurgeProtection : null
+    enablePurgeProtection: enablePurgeProtection
     createMode: createMode
 
     // Network

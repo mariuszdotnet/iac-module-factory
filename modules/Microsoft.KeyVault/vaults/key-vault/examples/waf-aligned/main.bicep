@@ -95,4 +95,4 @@ module keyVault '../../main.bicep' = {
 output keyVaultId string = keyVault.outputs.resourceId
 output keyVaultName string = keyVault.outputs.name
 output keyVaultUri string = keyVault.outputs.uri
-output principalId string = keyVault.outputs.systemAssignedMIPrincipalId
+output principalId string? = keyVault.outputs.systemAssignedMIPrincipalId
