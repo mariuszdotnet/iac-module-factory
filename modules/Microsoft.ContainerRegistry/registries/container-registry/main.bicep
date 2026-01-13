@@ -41,9 +41,8 @@ param anonymousPullEnabled bool = false
 @allowed([
   'Disabled'
   'Enabled'
-  ''
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Optional. Whether to allow trusted Azure services to access a network restricted registry.')
 @allowed([
@@ -265,7 +264,7 @@ output resourceGroupName string = containerRegistry.outputs.resourceGroupName
 output location string = containerRegistry.outputs.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = containerRegistry.outputs.systemAssignedMIPrincipalId
+output systemAssignedMIPrincipalId string? = containerRegistry.outputs.?systemAssignedMIPrincipalId
 
 @description('The private endpoints of the Container Registry.')
 output privateEndpoints array = containerRegistry.outputs.privateEndpoints
