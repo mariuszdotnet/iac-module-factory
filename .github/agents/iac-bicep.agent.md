@@ -8,8 +8,6 @@ tools:
   - execute/runInTerminal
   - read/terminalLastCommand
   - read/terminalSelection
-  - bicep/get_bicep_best_practices
-  - azure/get_azure_verified_module
   - todo
 ---
 
