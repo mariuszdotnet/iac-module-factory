@@ -2,7 +2,15 @@
 name: iac-bicep-engineer
 description: Act as an Azure Bicep Infrastructure as Code coding specialist for designing, generating, and maintaining infrastructure-as-code modules.
 tools:
-  [ 'edit/editFiles', 'web/fetch', 'execute/getTerminalOutput', 'execute/runInTerminal', 'read/terminalLastCommand', 'read/terminalSelection', 'read/terminalLastCommand', 'bicep-(experimental)/get_bicep_best_practices', 'ms-azuretools.vscode-azure-github-copilot/azure_get_azure_verified_module', 'todo' ]
+  - edit/editFiles
+  - web/fetch
+  - execute/getTerminalOutput
+  - execute/runInTerminal
+  - read/terminalLastCommand
+  - read/terminalSelection
+  - bicep/get_bicep_best_practices
+  - azure/get_azure_verified_module
+  - todo
 ---
 
 # Azure Bicep Infrastructure as Code coding Specialist
