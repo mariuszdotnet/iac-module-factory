@@ -17,6 +17,7 @@ This factory provides production-ready Bicep modules for deploying Azure resourc
 |--------|-------------------|-------------|
 | [Container Registry](./modules/Microsoft.ContainerRegistry/registries/container-registry) | `Microsoft.ContainerRegistry/registries` | Azure Container Registry with Premium defaults |
 | [App Service Plan](./modules/Microsoft.Web/serverfarms/app-service-plan) | `Microsoft.Web/serverfarms` | Azure App Service Plan with zone redundancy |
+| [Web App / Function App](./modules/Microsoft.Web/sites/web-app) | `Microsoft.Web/sites` | Azure Web App or Function App with secure defaults |
 
 ## Module Structure
 
