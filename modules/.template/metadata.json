@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/bicep-registry-modules/main/schemas/module-metadata.json",
+  "name": "<module-name>",
+  "displayName": "<Module Display Name>",
+  "description": "<Brief description of the module>",
+  "owner": {
+    "name": "<Owner Team Name>",
+    "email": "<owner-email@company.com>"
+  },
+  "maturity": "experimental",
+  "version": "0.1.0",
+  "tags": [
+    "<tag1>",
+    "<tag2>"
+  ],
+  "azureResourceTypes": [
+    "<Microsoft.Provider/resourceType>"
+  ],
+  "documentation": {
+    "readme": "./README.md"
+  },
+  "compliance": {
+    "securityReview": false,
+    "policyCompliant": false
+  },
+  "support": {
+    "level": "community",
+    "contact": "<support-email@company.com>"
+  },
+  "createdDate": "YYYY-MM-DD",
+  "lastModifiedDate": "YYYY-MM-DD"
+}

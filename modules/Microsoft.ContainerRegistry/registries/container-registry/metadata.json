@@ -1,0 +1,46 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/bicep-registry-modules/main/schemas/module-metadata.json",
+  "name": "container-registry",
+  "displayName": "Azure Container Registry (AVM Wrapper)",
+  "description": "Deploys an Azure Container Registry using the Azure Verified Module (AVM) with organization-specific defaults.",
+  "owner": {
+    "name": "Platform Team",
+    "email": "platform-team@company.com"
+  },
+  "maturity": "stable",
+  "version": "1.0.0",
+  "tags": [
+    "containers",
+    "registry",
+    "docker",
+    "acr",
+    "avm"
+  ],
+  "azureResourceTypes": [
+    "Microsoft.ContainerRegistry/registries",
+    "Microsoft.ContainerRegistry/registries/replications",
+    "Microsoft.ContainerRegistry/registries/webhooks",
+    "Microsoft.ContainerRegistry/registries/scopeMaps",
+    "Microsoft.ContainerRegistry/registries/cacheRules",
+    "Microsoft.ContainerRegistry/registries/credentialSets"
+  ],
+  "documentation": {
+    "readme": "./README.md"
+  },
+  "compliance": {
+    "securityReview": true,
+    "policyCompliant": true
+  },
+  "support": {
+    "level": "supported",
+    "contact": "platform-team@company.com"
+  },
+  "dependencies": {
+    "avm": {
+      "module": "br/public:avm/res/container-registry/registry",
+      "version": "0.9.3"
+    }
+  },
+  "createdDate": "2026-01-13",
+  "lastModifiedDate": "2026-01-13"
+}
