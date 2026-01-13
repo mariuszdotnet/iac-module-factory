@@ -1,0 +1,49 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/bicep-registry-modules/main/schemas/module-metadata.json",
+  "name": "web-app",
+  "displayName": "Azure Web App / Function App (AVM Wrapper)",
+  "description": "Deploys an Azure Web App or Function App using the Azure Verified Module (AVM) with organization-specific defaults.",
+  "owner": {
+    "name": "Platform Team",
+    "email": "platform-team@company.com"
+  },
+  "maturity": "stable",
+  "version": "1.0.0",
+  "tags": [
+    "web",
+    "webapp",
+    "functionapp",
+    "app-service",
+    "site",
+    "avm"
+  ],
+  "azureResourceTypes": [
+    "Microsoft.Web/sites",
+    "Microsoft.Web/sites/slots",
+    "Microsoft.Web/sites/config",
+    "Microsoft.Web/sites/hybridconnectionnamespaces/relays",
+    "Microsoft.Authorization/locks",
+    "Microsoft.Authorization/roleAssignments",
+    "Microsoft.Insights/diagnosticSettings",
+    "Microsoft.Network/privateEndpoints"
+  ],
+  "documentation": {
+    "readme": "./README.md"
+  },
+  "compliance": {
+    "securityReview": true,
+    "policyCompliant": true
+  },
+  "support": {
+    "level": "supported",
+    "contact": "platform-team@company.com"
+  },
+  "dependencies": {
+    "avm": {
+      "module": "br/public:avm/res/web/site",
+      "version": "0.21.0"
+    }
+  },
+  "createdDate": "2026-01-13",
+  "lastModifiedDate": "2026-01-13"
+}
