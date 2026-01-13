@@ -1,0 +1,44 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/bicep-registry-modules/main/schemas/module-metadata.json",
+  "name": "key-vault",
+  "displayName": "Azure Key Vault (AVM Wrapper)",
+  "description": "Deploys an Azure Key Vault using the Azure Verified Module (AVM) with organization-specific defaults.",
+  "owner": {
+    "name": "Platform Team",
+    "email": "platform-team@company.com"
+  },
+  "maturity": "stable",
+  "version": "0.0.1",
+  "tags": [
+    "keyvault",
+    "secrets",
+    "keys",
+    "certificates",
+    "security",
+    "avm"
+  ],
+  "azureResourceTypes": [
+    "Microsoft.KeyVault/vaults",
+    "Microsoft.KeyVault/vaults/keys",
+    "Microsoft.KeyVault/vaults/secrets"
+  ],
+  "documentation": {
+    "readme": "./README.md"
+  },
+  "compliance": {
+    "securityReview": true,
+    "policyCompliant": true
+  },
+  "support": {
+    "level": "supported",
+    "contact": "platform-team@company.com"
+  },
+  "dependencies": {
+    "avm": {
+      "module": "br/public:avm/res/key-vault/vault",
+      "version": "0.13.3"
+    }
+  },
+  "createdDate": "2026-01-13",
+  "lastModifiedDate": "2026-01-13"
+}
