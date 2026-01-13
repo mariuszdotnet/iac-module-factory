@@ -13,11 +13,13 @@ This factory provides production-ready Bicep modules for deploying Azure resourc
 
 ## Available Modules
 
-| Module | Resource Provider | Description |
-|--------|-------------------|-------------|
-| [Container Registry](./modules/Microsoft.ContainerRegistry/registries/container-registry) | `Microsoft.ContainerRegistry/registries` | Azure Container Registry with Premium defaults |
-| [App Service Plan](./modules/Microsoft.Web/serverfarms/app-service-plan) | `Microsoft.Web/serverfarms` | Azure App Service Plan with zone redundancy |
-| [Web App / Function App](./modules/Microsoft.Web/sites/web-app) | `Microsoft.Web/sites` | Azure Web App or Function App with secure defaults |
+| Module | Version | Resource Provider | Description |
+|--------|---------|-------------------|-------------|
+| [Container Registry](./modules/Microsoft.ContainerRegistry/registries/container-registry) | `0.0.1` | `Microsoft.ContainerRegistry/registries` | Azure Container Registry with Premium defaults |
+| [App Service Plan](./modules/Microsoft.Web/serverfarms/app-service-plan) | `0.0.1` | `Microsoft.Web/serverfarms` | Azure App Service Plan with zone redundancy |
+| [Web App / Function App](./modules/Microsoft.Web/sites/web-app) | `0.0.1` | `Microsoft.Web/sites` | Azure Web App or Function App with secure defaults |
+
+> **Note:** Version information is tracked in [`modules/versions.json`](./modules/versions.json). See [SemVer](https://semver.org/) for versioning conventions.
 
 ## Module Structure
 
