@@ -1,0 +1,137 @@
+# Bicep Module CI - Lint and Build Validation
+# Runs on pull requests to validate all Bicep modules
+
+name: CI - Bicep Module Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'modules/**'
+      - 'bicepconfig.json'
+      - '.github/workflows/ci.yml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate:
+    name: Lint and Build Modules
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install Bicep CLI
+        run: |
+          az bicep install
+          az bicep version
+
+      - name: Discover and Validate Modules
+        id: validate
+        run: |
+          set -e
+          
+          echo "🔍 Discovering Bicep modules..."
+          
+          # Find all main.bicep files in modules directory
+          MODULES=$(find modules -name "main.bicep" -type f | sort)
+          
+          if [ -z "$MODULES" ]; then
+            echo "⚠️ No modules found to validate"
+            exit 0
+          fi
+          
+          TOTAL=0
+          PASSED=0
+          FAILED=0
+          FAILED_MODULES=""
+          
+          for MODULE in $MODULES; do
+            TOTAL=$((TOTAL + 1))
+            MODULE_DIR=$(dirname "$MODULE")
+            MODULE_NAME=$(echo "$MODULE_DIR" | sed 's|modules/||')
+            
+            echo ""
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "📦 Validating: $MODULE_NAME"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            
+            # Run bicep build (syntax validation)
+            echo "🔨 Building..."
+            if az bicep build --file "$MODULE" --stdout > /dev/null 2>&1; then
+              echo "✅ Build: PASSED"
+              BUILD_RESULT="passed"
+            else
+              echo "❌ Build: FAILED"
+              az bicep build --file "$MODULE" 2>&1 || true
+              BUILD_RESULT="failed"
+            fi
+            
+            # Run bicep lint (linting rules from bicepconfig.json)
+            echo "🔍 Linting..."
+            LINT_OUTPUT=$(az bicep lint --file "$MODULE" 2>&1) || true
+            
+            # Check for errors in lint output
+            if echo "$LINT_OUTPUT" | grep -q "Error"; then
+              echo "❌ Lint: FAILED"
+              echo "$LINT_OUTPUT"
+              LINT_RESULT="failed"
+            else
+              echo "✅ Lint: PASSED"
+              # Show warnings if any
+              if echo "$LINT_OUTPUT" | grep -q "Warning"; then
+                echo "⚠️ Warnings:"
+                echo "$LINT_OUTPUT" | grep "Warning" || true
+              fi
+              LINT_RESULT="passed"
+            fi
+            
+            # Track results
+            if [ "$BUILD_RESULT" = "passed" ] && [ "$LINT_RESULT" = "passed" ]; then
+              PASSED=$((PASSED + 1))
+            else
+              FAILED=$((FAILED + 1))
+              FAILED_MODULES="$FAILED_MODULES\n  - $MODULE_NAME"
+            fi
+          done
+          
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📊 Validation Summary"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Total modules: $TOTAL"
+          echo "✅ Passed: $PASSED"
+          echo "❌ Failed: $FAILED"
+          
+          if [ $FAILED -gt 0 ]; then
+            echo ""
+            echo "Failed modules:"
+            echo -e "$FAILED_MODULES"
+            exit 1
+          fi
+          
+          echo ""
+          echo "🎉 All modules validated successfully!"
+
+      - name: Comment on PR (on failure)
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ **Bicep Module Validation Failed**\n\nOne or more modules failed lint or build validation. Please check the workflow logs for details.'
+            })

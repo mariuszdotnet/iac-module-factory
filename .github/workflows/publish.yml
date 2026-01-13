@@ -1,0 +1,107 @@
+# Bicep Module Publish - Deploy to Azure Container Registry
+# Publishes modules to ACR based on versions.json
+# Skips modules where the version tag already exists (idempotent)
+
+name: Publish - Bicep Modules to ACR
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'modules/**'
+      - 'modules/versions.json'
+      - '.github/workflows/publish.yml'
+      - 'scripts/publish-modules.sh'
+  workflow_dispatch:
+    inputs:
+      force_publish:
+        description: 'Force publish all modules (ignore existing tags)'
+        required: false
+        default: 'false'
+        type: boolean
+
+# Required GitHub Configuration:
+# ─────────────────────────────────────────────────────────────────────────────
+# Secrets:
+#   AZURE_CLIENT_ID      - App registration client ID
+#   AZURE_TENANT_ID      - Azure AD tenant ID  
+#   AZURE_SUBSCRIPTION_ID - Target subscription ID
+#
+# Variables:
+#   ACR_NAME             - Container registry name (e.g., iacmodulefactory)
+#
+# Azure AD App Registration:
+#   1. Create app registration in Azure AD
+#   2. Add federated credential with:
+#      - Issuer: https://token.actions.githubusercontent.com
+#      - Subject: repo:mariuszdotnet/iac-module-factory:ref:refs/heads/main
+#      - Audience: api://AzureADTokenExchange
+#   3. Grant AcrPush role on the target ACR
+# ─────────────────────────────────────────────────────────────────────────────
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ACR_NAME: ${{ vars.ACR_NAME }}
+
+jobs:
+  publish:
+    name: Publish Modules to ACR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure CLI Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install Bicep CLI
+        run: |
+          az bicep install
+          az bicep version
+
+      - name: Validate ACR Access
+        run: |
+          echo "🔐 Validating ACR access..."
+          
+          if [ -z "$ACR_NAME" ]; then
+            echo "❌ Error: ACR_NAME variable is not set"
+            echo "Please configure the ACR_NAME variable in GitHub repository settings"
+            exit 1
+          fi
+          
+          # Test ACR login
+          if az acr login --name "$ACR_NAME" 2>/dev/null; then
+            echo "✅ Successfully authenticated to ACR: $ACR_NAME"
+          else
+            echo "❌ Failed to authenticate to ACR: $ACR_NAME"
+            echo "Ensure the service principal has AcrPush role on the registry"
+            exit 1
+          fi
+
+      - name: Publish Modules
+        env:
+          FORCE_PUBLISH: ${{ github.event.inputs.force_publish || 'false' }}
+        run: |
+          chmod +x scripts/publish-modules.sh
+          ./scripts/publish-modules.sh
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 📦 Bicep Module Publish Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Registry | \`$ACR_NAME.azurecr.io\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Triggered by | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Force publish | ${{ github.event.inputs.force_publish || 'false' }} |" >> $GITHUB_STEP_SUMMARY
