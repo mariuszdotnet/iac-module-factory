@@ -17,5 +17,11 @@
     "commit": "e21583b252b94574eb016533f9a4c1c44e4b347e",
     "publishedAt": "2026-01-13T00:00:00Z",
     "notes": "Initial release - Azure Web App / Function App with secure defaults"
+  },
+  "Microsoft.KeyVault/vaults/key-vault": {
+    "version": "0.0.1",
+    "commit": "pending",
+    "publishedAt": "2026-01-13T22:49:00Z",
+    "notes": "Initial release - Azure Key Vault with Premium SKU, RBAC authorization, and secure defaults"
   }
 }

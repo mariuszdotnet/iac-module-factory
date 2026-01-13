@@ -16,6 +16,7 @@ This factory provides production-ready Bicep modules for deploying Azure resourc
 | Module | Version | Resource Provider | Description |
 |--------|---------|-------------------|-------------|
 | [Container Registry](./modules/Microsoft.ContainerRegistry/registries/container-registry) | `0.0.1` | `Microsoft.ContainerRegistry/registries` | Azure Container Registry with Premium defaults |
+| [Key Vault](./modules/Microsoft.KeyVault/vaults/key-vault) | `0.0.1` | `Microsoft.KeyVault/vaults` | Azure Key Vault with Premium SKU and secure defaults |
 | [App Service Plan](./modules/Microsoft.Web/serverfarms/app-service-plan) | `0.0.1` | `Microsoft.Web/serverfarms` | Azure App Service Plan with zone redundancy |
 | [Web App / Function App](./modules/Microsoft.Web/sites/web-app) | `0.0.1` | `Microsoft.Web/sites` | Azure Web App or Function App with secure defaults |
 
