@@ -5,7 +5,7 @@
 # For format details, see: https://gh.io/customagents/config
 
 name:iac-bicep
-description:
+description: An IaC Agent specialized in Azure Bicep for designing, generating, and maintaining infrastructure-as-code modules.
 ---
 
 # My Agent
