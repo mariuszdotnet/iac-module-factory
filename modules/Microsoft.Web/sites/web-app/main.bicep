@@ -66,28 +66,38 @@ param redundancyMode string = 'None'
 @description('Optional. Configures a site to accept only HTTPS requests.')
 param httpsOnly bool = true
 
-@description('Optional. Whether to use a managed identity for the storage account.')
-param storageAccountUseIdentityAuthentication bool = false
-
 // =============================================================================
 // Site Configuration
 // =============================================================================
 
 @description('Optional. The site config object.')
-param siteConfig object = {}
+param siteConfig object = {
+  alwaysOn: true
+  minTlsVersion: '1.2'
+  ftpsState: 'FtpsOnly'
+}
 
 // =============================================================================
-// App Settings & Connection Strings
+// App Settings Configuration (via configs array)
 // =============================================================================
 
-@description('Optional. The app settings key-value pairs.')
+@description('Optional. The app settings key-value pairs as an object.')
 param appSettingsKeyValuePairs object = {}
 
+@description('Optional. Resource ID of the storage account used for Functions. Used in configs for appsettings.')
+param storageAccountResourceId string = ''
+
+@description('Optional. Whether to use a managed identity for the storage account.')
+param storageAccountUseIdentityAuthentication bool = false
+
+@description('Optional. Resource ID of the app insight to use for the site.')
+param appInsightResourceId string = ''
+
 // =============================================================================
-// Authentication
+// Authentication (via configs array)
 // =============================================================================
 
-@description('Optional. The authentication/authorization settings for the site.')
+@description('Optional. The authentication/authorization V2 settings for the site.')
 param authSettingV2Configuration object = {}
 
 // =============================================================================
@@ -102,32 +112,14 @@ param managedIdentities object = {}
 // =============================================================================
 
 @description('Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration.')
-param virtualNetworkSubnetId string = ''
-
-@description('Optional. To enable accessing content over virtual network.')
-param vnetContentShareEnabled bool = false
-
-@description('Optional. To enable pulling image over Virtual Network.')
-param vnetImagePullEnabled bool = false
-
-@description('Optional. Virtual Network Route All enabled.')
-param vnetRouteAllEnabled bool = false
+param virtualNetworkSubnetResourceId string = ''
 
 // =============================================================================
 // Container & Functions Configuration
 // =============================================================================
 
-@description('Optional. Resource ID of the storage account used to manage triggers and logging function execution.')
-param storageAccountResourceId string = ''
-
 @description('Optional. Required if app service plan is different from functionapp.')
 param storageAccountRequired bool = false
-
-@description('Optional. Checks if Customer provided storage account is required.')
-param functionsExtensionVersion string = '~4'
-
-@description('Optional. The runtime stack used for functions.')
-param functionsWorkerRuntime string = ''
 
 @description('Optional. The number of days to keep Function App logs.')
 param dailyMemoryTimeQuota int = 0
@@ -181,13 +173,6 @@ param roleAssignments array = []
 param lock object = {}
 
 // =============================================================================
-// Application Insights
-// =============================================================================
-
-@description('Optional. Resource ID of the app insight to use for the site.')
-param appInsightResourceId string = ''
-
-// =============================================================================
 // Key Vault References
 // =============================================================================
 
@@ -200,6 +185,32 @@ param keyVaultAccessIdentityResourceId string = ''
 
 @description('Optional. Enable telemetry via the Azure Verified Module.')
 param enableTelemetry bool = true
+
+// =============================================================================
+// Build configs array for AVM module
+// =============================================================================
+
+// Build appsettings config if any app settings are provided
+var appSettingsConfig = !empty(appSettingsKeyValuePairs) || !empty(storageAccountResourceId) || !empty(appInsightResourceId) ? [
+  {
+    name: 'appsettings'
+    storageAccountResourceId: !empty(storageAccountResourceId) ? storageAccountResourceId : null
+    storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
+    applicationInsightResourceId: !empty(appInsightResourceId) ? appInsightResourceId : null
+    properties: appSettingsKeyValuePairs
+  }
+] : []
+
+// Build authsettingsV2 config if auth configuration is provided
+var authSettingsConfig = !empty(authSettingV2Configuration) ? [
+  {
+    name: 'authsettingsV2'
+    properties: authSettingV2Configuration
+  }
+] : []
+
+// Combine all configs
+var configs = concat(appSettingsConfig, authSettingsConfig)
 
 // =============================================================================
 // Deploy Azure Web App / Function App using AVM 0.21.0
@@ -221,19 +232,10 @@ module site 'br/public:avm/res/web/site:0.21.0' = {
     hyperV: hyperV
     redundancyMode: redundancyMode
     httpsOnly: httpsOnly
-    storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
     siteConfig: siteConfig
-    appSettingsKeyValuePairs: appSettingsKeyValuePairs
-    authSettingV2Configuration: authSettingV2Configuration
     managedIdentities: managedIdentities
-    virtualNetworkSubnetId: virtualNetworkSubnetId
-    vnetContentShareEnabled: vnetContentShareEnabled
-    vnetImagePullEnabled: vnetImagePullEnabled
-    vnetRouteAllEnabled: vnetRouteAllEnabled
-    storageAccountResourceId: storageAccountResourceId
+    virtualNetworkSubnetResourceId: !empty(virtualNetworkSubnetResourceId) ? virtualNetworkSubnetResourceId : null
     storageAccountRequired: storageAccountRequired
-    functionsExtensionVersion: functionsExtensionVersion
-    functionsWorkerRuntime: functionsWorkerRuntime
     dailyMemoryTimeQuota: dailyMemoryTimeQuota
     publicNetworkAccess: publicNetworkAccess
     slots: slots
@@ -243,9 +245,9 @@ module site 'br/public:avm/res/web/site:0.21.0' = {
     basicPublishingCredentialsPolicies: basicPublishingCredentialsPolicies
     roleAssignments: roleAssignments
     lock: lock
-    appInsightResourceId: appInsightResourceId
     keyVaultAccessIdentityResourceId: keyVaultAccessIdentityResourceId
     enableTelemetry: enableTelemetry
+    configs: !empty(configs) ? configs : null
   }
 }
 
