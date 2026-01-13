@@ -1,5 +1,5 @@
 ---
-name:iac-bicep-engineer
+name: iac-bicep-engineer
 description: An IaC Agent specialized in Azure Bicep for designing, generating, and maintaining infrastructure-as-code modules.
 tools: []
 ---
