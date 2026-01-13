@@ -1,0 +1,21 @@
+{
+  "_comment": "Central manifest tracking published versions of all modules. Use SemVer: MAJOR=breaking, MINOR=feature, PATCH=fix.",
+  "Microsoft.ContainerRegistry/registries/container-registry": {
+    "version": "0.0.1",
+    "commit": "e21583b252b94574eb016533f9a4c1c44e4b347e",
+    "publishedAt": "2026-01-13T00:00:00Z",
+    "notes": "Initial release - Azure Container Registry with Premium defaults and zone redundancy"
+  },
+  "Microsoft.Web/serverfarms/app-service-plan": {
+    "version": "0.0.1",
+    "commit": "e21583b252b94574eb016533f9a4c1c44e4b347e",
+    "publishedAt": "2026-01-13T00:00:00Z",
+    "notes": "Initial release - Azure App Service Plan with zone redundancy support"
+  },
+  "Microsoft.Web/sites/web-app": {
+    "version": "0.0.1",
+    "commit": "e21583b252b94574eb016533f9a4c1c44e4b347e",
+    "publishedAt": "2026-01-13T00:00:00Z",
+    "notes": "Initial release - Azure Web App / Function App with secure defaults"
+  }
+}
