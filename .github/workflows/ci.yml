@@ -4,6 +4,7 @@
 name: CI - Bicep Module Validation
 
 on:
+  workflow_dispatch:  # Allows manual triggering from GitHub Actions UI
   pull_request:
     branches:
       - main
